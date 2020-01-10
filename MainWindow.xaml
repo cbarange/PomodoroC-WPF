@@ -1,0 +1,89 @@
+﻿<Window x:Class="EnvDotNetPomodoro.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EnvDotNetPomodoro"
+        mc:Ignorable="d"
+        Title="Pomodoro" Height="450" Width="800">
+
+    <Grid Height="299" Margin="234,0,0,0">
+        <ListView ItemsSource="{Binding PomodoroTaskList}" Margin="-10,-29,10,-59">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Sujet" Width="200" DisplayMemberBinding="{Binding sujet}" />
+                    <GridViewColumn Header="Client" Width="80" DisplayMemberBinding="{Binding client}" />
+                    <GridViewColumn Header="Priorité" Width="80" DisplayMemberBinding="{Binding priorite}" />
+                    <GridViewColumn Header="Tag" Width="145" DisplayMemberBinding="{Binding tagAsString}" />
+                    <GridViewColumn Header="Itération" Width="50" DisplayMemberBinding="{Binding currentIndexTimer}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Button Command="{Binding ClickStart}" Content="Start" HorizontalAlignment="Left" Margin="-195,23,0,0" VerticalAlignment="Top" Height="30" Width="55"/>
+        <Button Command="{Binding ClickStop}" Content="Stop" HorizontalAlignment="Left" Margin="-115,23,0,0" VerticalAlignment="Top" Height="30" Width="55"/>
+        <Button Command="{Binding ClickPause}" Content="Pause" HorizontalAlignment="Left" Margin="-115,70,0,0" VerticalAlignment="Top" Height="30" Width="55"/>
+        <Button Command="{Binding ClickPlay}" Content="Play" HorizontalAlignment="Left" Margin="-195,70,0,0" VerticalAlignment="Top" Height="30" Width="55"/>
+        <TextBlock  Name="CurrentTimer" HorizontalAlignment="Left" Margin="-186,-20,0,0" Text="{Binding TimerPomodoro}" TextWrapping="Wrap" VerticalAlignment="Top" Height="38" Width="120" TextAlignment="Center" FontSize="18"/>
+        <Label Content="Projet POMODORO Clément BARANGER B3 Classe 2" HorizontalAlignment="Left" Margin="256,-63,0,0" VerticalAlignment="Top" Width="300"/>
+        <TextBox HorizontalAlignment="Left" Margin="-228,160,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Ajouter TAG" HorizontalAlignment="Left" Margin="-88,160,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="-228,200,0,0" Text="tag search" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Recherche Tag" HorizontalAlignment="Left" Margin="-100,200,0,0" VerticalAlignment="Top"/>
+        <Slider HorizontalAlignment="Left" Margin="-228,232,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label Name="PrioriteLabel" Content="Priorité" HorizontalAlignment="Left" Margin="-88,224,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="ObjectifTextBlock" HorizontalAlignment="Left" Margin="-215,275,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" Width="20"/>
+        <Label Name="ObjectifLabel" Content="Objectif" HorizontalAlignment="Left" Margin="-228,255,0,0" VerticalAlignment="Top" Width="70"/>
+        <Label Content="En cours" HorizontalAlignment="Left" Margin="-152,255,0,0" VerticalAlignment="Top"/>
+        <TextBlock Name="EnCoursTextBlock" HorizontalAlignment="Left" Margin="-149,289,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <Label Name="RestantLabel" Content="Restant" HorizontalAlignment="Left" Margin="-64,255,0,0" VerticalAlignment="Top"/>
+        <TextBlock Name="RestantTextBlock" HorizontalAlignment="Left" Margin="-59,289,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <Rectangle HorizontalAlignment="Left" Height="5" Margin="-228,145,0,0" Stroke="Black" VerticalAlignment="Top" Width="212" RenderTransformOrigin="0.5,0.5" Fill="Black">
+            <Rectangle.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleY="-1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Rectangle.RenderTransform>
+        </Rectangle>
+        <Rectangle HorizontalAlignment="Left" Height="5" Margin="-228,190,0,0" Stroke="Black" VerticalAlignment="Top" Width="212" RenderTransformOrigin="0.5,0.5" Fill="Black">
+            <Rectangle.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleY="-1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Rectangle.RenderTransform>
+        </Rectangle>
+        <Rectangle HorizontalAlignment="Left" Height="5" Margin="-228,255,0,0" Stroke="Black" VerticalAlignment="Top" Width="212" RenderTransformOrigin="0.5,0.5" Fill="Black">
+            <Rectangle.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleY="-1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Rectangle.RenderTransform>
+        </Rectangle>
+        <Button Command="{Binding ClickNext}" Content="Next" HorizontalAlignment="Left" Margin="-144,112,0,0" VerticalAlignment="Top" Width="36"/>
+        <TextBlock  Name="TestString" HorizontalAlignment="Left" Margin="-223,-48,0,0" Text="{Binding PomodoroSujet}" TextWrapping="Wrap" VerticalAlignment="Top" Height="35" Width="213" TextAlignment="Center" FontSize="10"/>
+        <Button Command="{Binding ClickAjouter}" Content="Ajouter un pomodoro" HorizontalAlignment="Left" Margin="40,-54,0,0" VerticalAlignment="Top" Width="173"/>
+
+        <StackPanel Visibility = "{Binding StackPanelVisibility}" Background="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" HorizontalAlignment="Left" Width="709" Margin="-186,-50,0,114">
+            <TextBlock Text="Entrer le sujet" HorizontalAlignment="Left" Margin="5,0,0,0" />
+            <TextBox Text="{Binding newPomodoroSujet}" HorizontalAlignment="Center" Width="350" />
+            <TextBlock Text="Entrer le client" Margin="5,0,0,0" />
+            <TextBox Text="{Binding newPomodoroClient}" Width="350" HorizontalAlignment="Center" />
+            <TextBlock Text="Entrer la priorité" Margin="5,0,0,0" />
+            <TextBox Text="{Binding newPomodoroPriorite}" HorizontalAlignment="Center" Width="350" />
+            <TextBlock Text="Entrer les tags" Margin="5,0,0,0" />
+            <TextBox Text="{Binding newPomodorotags}" Width="350" HorizontalAlignment="Center" />
+
+            <Button Command="{Binding ClickValider}" Content="Valider" Margin="0,5,0,0" Width="150"/>
+            <Button Command="{Binding ClickAnnuler}" Content="Annuler" Width="150" Margin="0,5,0,0"/>
+        </StackPanel>
+    </Grid>
+
+</Window>

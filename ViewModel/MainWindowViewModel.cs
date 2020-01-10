@@ -11,6 +11,9 @@ namespace EnvDotNetPomodoro {
 
     public class MainWindowViewModel : SimpleObservableObject {
         public event PropertyChangedEventHandler PropertyChanged;
+        // --- Search by Tag ---
+        private string _searchTag;
+        public string SearchTag { get { return _searchTag; } set { Set(ref _searchTag, value); } }
         // --- Add pomodoro ---
         private Visibility _stackPanelVisibility;
         public Visibility StackPanelVisibility { get { return _stackPanelVisibility; } set { Set(ref _stackPanelVisibility, value); } }
@@ -33,6 +36,10 @@ namespace EnvDotNetPomodoro {
         public string? TimerPomodoro { get { return _timerPomodoro; } set { Set(ref _timerPomodoro, value); } }
         private PomodoroClock monTimer { get; set; }
 
+        // --- Click Recherche ---
+        private ICommand _clickRecherche;
+        public ICommand ClickRechercher{
+            get { return _clickRecherche ?? (_clickRecherche = new CommandHandler(() => ClickOnRechercher(), () => CanExecute)); } }
         // --- Click Ajouter ---
         private ICommand _clickAjouter;
         public ICommand ClickAjouter {
@@ -82,7 +89,13 @@ namespace EnvDotNetPomodoro {
             TimerPomodoro = monTimer.countDownTimer.getTimerValue();
             PomodoroSujet = monTimer.sujet + " / " + monTimer.client;
         }
-
+        // --- Click on search by tag ---
+        public void ClickOnRechercher() {
+            if (SearchTag != "" && SearchTag != null) {
+                string[] searchedTag = SearchTag.Split(' ');
+                _pomodoroTaskList.filter(searchedTag);
+            }
+        }
         // --- Click on add pomodoro ---
         public void ClickOnAjouter() { StackPanelVisibility = Visibility.Visible; }
         public void ClickOnValider() { 
@@ -90,7 +103,7 @@ namespace EnvDotNetPomodoro {
             _pomodoroTaskList.addPomodoro(new PomodoroClock(newPomodoroClient, newPomodoroSujet, newPomodoroPriorite, newPomodorotags));
         }
         public void ClickOnCancel() { StackPanelVisibility = Visibility.Hidden; }
-        // --- Click on Start/Stop/Pause/Play---
+        // --- Click on Start/Stop/Pause/Play ---
         public bool CanExecute { get { return true; } }
         public void ClickOnStart() { monTimer.start(); }
         public void ClickOnStop() { monTimer.stop(); }

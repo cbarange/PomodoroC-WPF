@@ -12,17 +12,15 @@ namespace EnvDotNetPomodoro.Model
         private const int CLOCK_TIMER_PAUSE = 15 * 60 * 1000;
         public CountDownTimer countDownTimer { get; set; }
         public int[] config;
+        private PomodoroClock p;
+
         public int currentIndexTimer { get; set; }
         public int priorite { get; set; }
         public string sujet { get; set; }
         public string client { get; set; }
         public string[] tag { get; set; }
 
-        public string tagAsString{
-            get {
-                return string.Join(" - ", tag);
-            }
-            }
+        public string tagAsString{ get { return string.Join(" #", tag); } }
 
         public PomodoroClock(string sujet,string client, int priorite, string tags) {
             config = new int[]{CLOCK_TIMER_WORK, CLOCK_TIMER_BREAK, CLOCK_TIMER_WORK, CLOCK_TIMER_BREAK, CLOCK_TIMER_WORK, CLOCK_TIMER_BREAK, CLOCK_TIMER_WORK, CLOCK_TIMER_PAUSE};
@@ -33,18 +31,21 @@ namespace EnvDotNetPomodoro.Model
             tag = tags.Split(' ');
             countDownTimer = new CountDownTimer(config[currentIndexTimer]);
         }
-        public void start() {
-            countDownTimer.startTimer();
+
+        public PomodoroClock(PomodoroClock p) {
+            config = new int[] { CLOCK_TIMER_WORK, CLOCK_TIMER_BREAK, CLOCK_TIMER_WORK, CLOCK_TIMER_BREAK, CLOCK_TIMER_WORK, CLOCK_TIMER_BREAK, CLOCK_TIMER_WORK, CLOCK_TIMER_PAUSE };
+            currentIndexTimer = 0;
+            this.sujet = p.sujet;
+            this.client = p.client;
+            this.priorite = p.priorite;
+            tag = p.tag;
+            countDownTimer = new CountDownTimer(config[currentIndexTimer]);
         }
-        public void stop() {
-            countDownTimer.stopTimer();
-        }
-        public void play() {
-            countDownTimer.playTimer();
-        }
-        public void pause() {
-            countDownTimer.pauseTimer();
-        }
+
+        public void start() { countDownTimer.startTimer(); }
+        public void stop() { countDownTimer.stopTimer(); }
+        public void play() { countDownTimer.playTimer(); }
+        public void pause() { countDownTimer.pauseTimer(); }
         public void next() {
             currentIndexTimer++;
             if (currentIndexTimer > 7) { 

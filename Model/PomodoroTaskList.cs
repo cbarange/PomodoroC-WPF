@@ -28,6 +28,11 @@ namespace EnvDotNetPomodoro.Model {
             foreach (PomodoroClock p in resultList)
                 pomodoroList.Add(p);
         }
+        public void resetFilter() {
+            pomodoroList.Clear();
+            foreach (PomodoroClock p in fullPomodoroList)
+                pomodoroList.Add(p);
+        }
         public void addPomodoro(PomodoroClock pomodoro) {
             pomodoroList.Add(pomodoro);
             fullPomodoroList.Add(new PomodoroClock(pomodoro));

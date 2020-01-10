@@ -94,6 +94,8 @@ namespace EnvDotNetPomodoro {
             if (SearchTag != "" && SearchTag != null) {
                 string[] searchedTag = SearchTag.Split(' ');
                 _pomodoroTaskList.filter(searchedTag);
+            } else {
+                _pomodoroTaskList.resetFilter();
             }
         }
         // --- Click on add pomodoro ---

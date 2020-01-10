@@ -23,6 +23,7 @@
 * [X] - Minuteur de type pomodoro (25/5/25/5/25/5/25/15)
 * [X] - Ajouter des pomodoros dans la liste
 * [X] - Filtrer la liste en fonction des tags
+* [X] - Filtrer la liste en fonction de la priorité
 
 ## TO DO
 

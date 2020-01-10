@@ -28,6 +28,16 @@ namespace EnvDotNetPomodoro.Model {
             foreach (PomodoroClock p in resultList)
                 pomodoroList.Add(p);
         }
+
+        public void filterPriorite(int prio) {
+            ObservableCollection<PomodoroClock> resultList = new ObservableCollection<PomodoroClock>();
+            foreach (PomodoroClock p in fullPomodoroList)
+                if (p.priorite >= prio)
+                    resultList.Add(new PomodoroClock(p));
+            pomodoroList.Clear();
+            foreach (PomodoroClock p in resultList)
+                pomodoroList.Add(p);
+        }
         public void resetFilter() {
             pomodoroList.Clear();
             foreach (PomodoroClock p in fullPomodoroList)

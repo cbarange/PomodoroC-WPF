@@ -11,6 +11,9 @@ namespace EnvDotNetPomodoro {
 
     public class MainWindowViewModel : SimpleObservableObject {
         public event PropertyChangedEventHandler PropertyChanged;
+        // --- Slider priority ---
+        private int _prioriteSlider;
+        public int PrioriteSlider { get { return _prioriteSlider; } set { PrioriteSlider_OnChange(); Set(ref _prioriteSlider, value); } }
         // --- Search by Tag ---
         private string _searchTag;
         public string SearchTag { get { return _searchTag; } set { Set(ref _searchTag, value); } }
@@ -79,10 +82,13 @@ namespace EnvDotNetPomodoro {
             _pomodoroTaskList = new PomodoroTaskList();
             monTimer = _pomodoroTaskList.pomodoroList[0];
             monTimer.countDownTimer.OnChange += MonTimer_OnChange;
-        
             StackPanelVisibility = Visibility.Hidden;
         }
+        public event EventHandler OnChange;
         
+        private void PrioriteSlider_OnChange() {
+            _pomodoroTaskList.filterPriorite(PrioriteSlider);
+        }
         private void MonTimer_OnChange(object sender, EventArgs e) {
             if (monTimer.countDownTimer.finish())
                 monTimer.next();

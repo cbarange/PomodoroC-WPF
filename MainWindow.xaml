@@ -3,12 +3,20 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:local="clr-namespace:EnvDotNetPomodoro"
         mc:Ignorable="d"
         Title="Pomodoro" Height="450" Width="800">
-
+    
     <Grid Height="299" Margin="234,0,0,0">
-        <ListView ItemsSource="{Binding PomodoroTaskList}" Margin="-10,-29,10,-59">
+        <ListView ItemsSource="{Binding PomodoroTaskList}" Margin="-10,-29,10,-59" Name="ListView1">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction 
+                        Command="{Binding ClickListView}"
+                        CommandParameter="{Binding ElementName=ListView1, Path=SelectedItem}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Sujet" Width="200" DisplayMemberBinding="{Binding sujet}" />

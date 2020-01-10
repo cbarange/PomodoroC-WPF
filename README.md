@@ -29,3 +29,7 @@
 
 * [ ] - Relier la liste au timer
 * [ ] - Modifier les pomodoros existants
+
+## Requirement
+
+`dotnet add package System.Windows.Interactivity.WPF --version 2.0.20525`

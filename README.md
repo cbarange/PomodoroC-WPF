@@ -24,11 +24,17 @@
 * [X] - Ajouter des pomodoros dans la liste
 * [X] - Filtrer la liste en fonction des tags
 * [X] - Filtrer la liste en fonction de la priorité
+* [X] - Changer de timer en double cliquant dans la liste
+* [X] - Ajouter des tags aux pomodoros existants
+* [X] - Filter les pomodoros en fonction de la date
+* [X] - Enregistrer les pomodoros dans un fichier dataPomodoro.data
+* [X] - Charger les pomodoros depuis le fichier dataPomodoro.data
+* [X] - Supprimer un pomodoro de la liste
+* [X] - Voir à quelle étape du pomodoro on est rendu
 
 ## TO DO
 
-* [ ] - Relier la liste au timer
-* [ ] - Modifier les pomodoros existants
+* [ ] - Visualiser les pomodoros fini
 
 ## Requirement
 

@@ -18,9 +18,15 @@ namespace EnvDotNetPomodoro {
         // --- Slider priority ---
         private int _prioriteSlider;
         public int PrioriteSlider { get { return _prioriteSlider; } set { PrioriteSlider_OnChange(); Set(ref _prioriteSlider, value); } }
+        // --- Display pomodoro interaction ---
+        private string _pomodoroEtape;
+        public string PomodoroEtape { get { return _pomodoroEtape; } set { Set(ref _pomodoroEtape, value); } }
         // --- Search by Tag ---
         private string _searchTag;
         public string SearchTag { get { return _searchTag; } set { Set(ref _searchTag, value); } }
+        // --- Add tag ---
+        private string _newAddTag;
+        public string NewAddTag { get { return _newAddTag; } set { Set(ref _newAddTag, value); } }
         // --- Add pomodoro ---
         private Visibility _stackPanelVisibility;
         public Visibility StackPanelVisibility { get { return _stackPanelVisibility; } set { Set(ref _stackPanelVisibility, value); } }
@@ -29,6 +35,9 @@ namespace EnvDotNetPomodoro {
         private string _newPomodorotags;
         public string newPomodorotags { get { return _newPomodorotags; } set { Set(ref _newPomodorotags, value); } }
         private int _newPomodoroPriorite;
+        private string _newPomodoroDate;
+        public string newPomodoroDate { get { return _newPomodoroDate; } set { Set(ref _newPomodoroDate, value); } }
+        
         public int newPomodoroPriorite { get { return _newPomodoroPriorite; } set { Set(ref _newPomodoroPriorite, value); } }
         private string _newPomodoroClient;
         public string newPomodoroClient { get { return _newPomodoroClient; } set { Set(ref _newPomodoroClient, value); } }
@@ -42,7 +51,11 @@ namespace EnvDotNetPomodoro {
         private string? _timerPomodoro;
         public string? TimerPomodoro { get { return _timerPomodoro; } set { Set(ref _timerPomodoro, value); } }
         private PomodoroClock monTimer { get; set; }
-
+        // --- Click Add tag ---
+        private ICommand _clickAddTag;
+        public ICommand ClickAddTag {
+            get { return _clickAddTag ?? (_clickAddTag = new CommandHandler(() => ClickOnAjouterTag(), () => CanExecute)); }
+        }
         // --- Click in ListView ---
         private ICommand _clickListView;
         public ICommand ClickListView { get {
@@ -51,6 +64,20 @@ namespace EnvDotNetPomodoro {
         private ICommand _clickRecherche;
         public ICommand ClickRechercher{
             get { return _clickRecherche ?? (_clickRecherche = new CommandHandler(() => ClickOnRechercher(), () => CanExecute)); } }
+        // --- Click Sauver ---
+        private ICommand _clickSave;
+        public ICommand ClickSave {
+            get { return _clickSave ?? (_clickSave = new CommandHandler(() => ClickOnSave(), () => CanExecute)); }
+        }
+        // --- Click charger ---
+        private ICommand _clickLoad;
+        public ICommand ClickLoad{
+            get { return _clickLoad ?? (_clickLoad = new CommandHandler(() => ClickOnLoad(), () => CanExecute)); }
+        }
+        // --- Click Supprimer ---
+        private ICommand _clickSupprimer;
+        public ICommand ClickSupprimer {
+            get { return _clickSupprimer ?? (_clickSupprimer = new CommandHandler(() => ClickOnRemove(), () => CanExecute)); } }
         // --- Click Ajouter ---
         private ICommand _clickAjouter;
         public ICommand ClickAjouter {
@@ -91,21 +118,60 @@ namespace EnvDotNetPomodoro {
             monTimer = _pomodoroTaskList.pomodoroList[0];
             monTimer.countDownTimer.OnChange += MonTimer_OnChange;
             StackPanelVisibility = Visibility.Hidden;
+            monTimer.OnChange += CurrentIndex_OnChange;
+
+            PomodoroEtape = getStepText();
         }
         public event EventHandler OnChange;
+        private void CurrentIndex_OnChange(object sender, EventArgs e) {
+            
+        }
+        string getStepText() {
+            switch (monTimer.currentIndexTimer) {
+                case 0:
+                case 1:
+                    return "⌛ - ⏳ - ⏳ - ⏳";
+                case 2:
+                case 3:
+                    return "⌛ - ⌛ - ⏳ - ⏳";
+                case 4:
+                case 5:
+                    return "⌛ - ⌛ - ⌛ - ⏳";
+                default:
+                    return "⌛ - ⌛ - ⌛ - ⌛";
+            }
+        }
         private void changeCurrentPomodoro(PomodoroClock p) {
             monTimer.pause();
+            monTimer.countDownTimer.OnChange -= MonTimer_OnChange;
             monTimer = p;
-
+            monTimer.countDownTimer.OnChange += MonTimer_OnChange;
+            TimerPomodoro = monTimer.countDownTimer.getTimerValue();
+            PomodoroSujet = monTimer.sujet + " / " + monTimer.client;
+            PomodoroEtape = getStepText();
         }
         private void PrioriteSlider_OnChange() {
             _pomodoroTaskList.filterPriorite(PrioriteSlider);
         }
+        
         private void MonTimer_OnChange(object sender, EventArgs e) {
             if (monTimer.countDownTimer.finish())
                 monTimer.next();
             TimerPomodoro = monTimer.countDownTimer.getTimerValue();
-            PomodoroSujet = monTimer.sujet + " / " + monTimer.client;
+            PomodoroSujet = "Sujet : "+monTimer.sujet + " / " + "Client : " + monTimer.client + " || DEBUG " + monTimer.currentIndexTimer.ToString()+monTimer.tagAsString;
+            PomodoroEtape = getStepText();
+        }
+        // --- Click on save ---
+        public void ClickOnSave() {
+            string res = _pomodoroTaskList.save();
+            if( res != "ok")
+                MessageBox.Show("Echec de la création du fichier ./dataPomodoro.data"+res);
+        }
+        // --- Click on load ---
+        public void ClickOnLoad() {
+            string res = _pomodoroTaskList.load();
+            if (res != "ok")
+                MessageBox.Show("Fichier ./dataPomodoro.data introuvable"+res);
         }
         // --- Click on search by tag ---
         public void ClickOnRechercher() {
@@ -116,14 +182,29 @@ namespace EnvDotNetPomodoro {
                 _pomodoroTaskList.resetFilter();
             }
         }
+        // --- Click on add tag ---
+        public void ClickOnAjouterTag() {
+            List<string> tag = new List<string>();
+            foreach (string s in monTimer.tag)
+                tag.Add(s);
+            if(NewAddTag != null)
+                tag.Add(NewAddTag);
+
+            monTimer.tag = tag.ToArray();
+        }
         // --- Click on add pomodoro ---
         public void ClickOnAjouter() { StackPanelVisibility = Visibility.Visible; }
         public void ClickOnValider() { 
             StackPanelVisibility = Visibility.Hidden;
-            _pomodoroTaskList.addPomodoro(new PomodoroClock(newPomodoroClient, newPomodoroSujet, newPomodoroPriorite, newPomodorotags));
+            if (newPomodoroClient == null) newPomodoroClient = "";
+            if (newPomodoroSujet == null) newPomodoroSujet = "";
+            if (newPomodorotags == null) newPomodorotags = "";
+            if (newPomodoroDate == null) newPomodoroDate = "";
+            _pomodoroTaskList.addPomodoro(new PomodoroClock(newPomodoroClient, newPomodoroSujet, newPomodoroPriorite, newPomodorotags, newPomodoroDate));
         }
         public void ClickOnCancel() { StackPanelVisibility = Visibility.Hidden; }
         // --- Click on Start/Stop/Pause/Play ---
+        public void ClickOnRemove() { _pomodoroTaskList.fullPomodoroList.Remove(monTimer); _pomodoroTaskList.pomodoroList.Remove(monTimer); }
         public bool CanExecute { get { return true; } }
         public void ClickOnStart() { monTimer.start(); }
         public void ClickOnStop() { monTimer.stop(); }

@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Threading;
+using System.ComponentModel;
+using System.Runtime.Serialization;
 
 namespace EnvDotNetPomodoro.Model
 {
-    public class PomodoroClock {
+    [Serializable()]
+    public class PomodoroClock : INotifyPropertyChanged {
         private const int CLOCK_TIMER_WORK = 25 * 60 * 1000;
         private const int CLOCK_TIMER_BREAK = 5 * 60 * 1000;
         private const int CLOCK_TIMER_PAUSE = 15 * 60 * 1000;
@@ -14,15 +17,27 @@ namespace EnvDotNetPomodoro.Model
         public int[] config;
         private PomodoroClock p;
 
-        public int currentIndexTimer { get; set; }
+        private int _currentIndexTimer;
+        [field: NonSerialized]
+        public event EventHandler OnChange;
+        [field: NonSerialized]
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public int currentIndexTimer { 
+            get { return _currentIndexTimer; } 
+            set {
+                _currentIndexTimer = value;
+                if (OnChange != null) { OnChange(this, new EventArgs()); } 
+            }
+        }
         public int priorite { get; set; }
         public string sujet { get; set; }
         public string client { get; set; }
         public string[] tag { get; set; }
-
+        public string date { get; set; }
         public string tagAsString{ get { return string.Join(" #", tag); } }
 
-        public PomodoroClock(string sujet,string client, int priorite, string tags) {
+        public PomodoroClock(string sujet,string client, int priorite, string tags, string date) {
             config = new int[]{CLOCK_TIMER_WORK, CLOCK_TIMER_BREAK, CLOCK_TIMER_WORK, CLOCK_TIMER_BREAK, CLOCK_TIMER_WORK, CLOCK_TIMER_BREAK, CLOCK_TIMER_WORK, CLOCK_TIMER_PAUSE};
             currentIndexTimer = 0;
             this.sujet = sujet;
@@ -30,6 +45,7 @@ namespace EnvDotNetPomodoro.Model
             this.priorite = priorite;
             tag = tags.Split(' ');
             countDownTimer = new CountDownTimer(config[currentIndexTimer]);
+            this.date = date;
         }
 
         public PomodoroClock(PomodoroClock p) {
@@ -39,7 +55,8 @@ namespace EnvDotNetPomodoro.Model
             this.client = p.client;
             this.priorite = p.priorite;
             tag = p.tag;
-            countDownTimer = new CountDownTimer(config[currentIndexTimer]);
+            countDownTimer = new CountDownTimer(p.countDownTimer);
+            this.date = p.date;
         }
 
         public void start() { countDownTimer.startTimer(); }
@@ -48,18 +65,23 @@ namespace EnvDotNetPomodoro.Model
         public void pause() { countDownTimer.pauseTimer(); }
         public void next() {
             currentIndexTimer++;
-            if (currentIndexTimer > 7) { 
-                currentIndexTimer = 0;
+            if (currentIndexTimer > 7) 
                 countDownTimer.stopTimer();
-            }
+            else 
+                countDownTimer.nextTimer(config[currentIndexTimer]);
+        }
 
-            countDownTimer.nextTimer(config[currentIndexTimer]);
+        public void GetObjectData(SerializationInfo info, StreamingContext context) {
+            throw new NotImplementedException();
         }
     }
-
+    [Serializable()]
     public class CountDownTimer {
         private int? _timer;
         private Boolean start = false;
+        private CountDownTimer countDownTimer;
+
+        [field: NonSerialized]
         public event EventHandler OnChange;
         public int? timer {
             get { return _timer; }
@@ -75,6 +97,14 @@ namespace EnvDotNetPomodoro.Model
             Thread t = new Thread(new ThreadStart(tikeTimer));
             t.Start();
         }
+
+        public CountDownTimer(CountDownTimer countDownTimer) {
+            this.timer = countDownTimer.timer;
+            this.start = countDownTimer.start;
+            Thread t = new Thread(new ThreadStart(tikeTimer));
+            t.Start();
+        }
+
         public void startTimer() {
             start = true;
         }
@@ -111,5 +141,6 @@ namespace EnvDotNetPomodoro.Model
                 return true;
             return false;
         }
+        
     }
 }

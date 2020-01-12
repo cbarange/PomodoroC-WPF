@@ -10,9 +10,16 @@ namespace EnvDotNetPomodoro.Model
 {
     [Serializable()]
     public class PomodoroClock : INotifyPropertyChanged {
+        // --- REAL TIMER ---
+        /*
         private const int CLOCK_TIMER_WORK = 25 * 60 * 1000;
-        private const int CLOCK_TIMER_BREAK = 5 * 60 * 1000;
-        private const int CLOCK_TIMER_PAUSE = 15 * 60 * 1000;
+        private const int CLOCK_TIMER_WORK = 25 * 60 * 1000;
+        private const int CLOCK_TIMER_WORK = 25 * 60 * 1000;
+        */
+        // --- DEBUG TIMER ---
+        private const int CLOCK_TIMER_WORK = 25 * 60 * 10;
+        private const int CLOCK_TIMER_BREAK = 5 * 60 * 10;
+        private const int CLOCK_TIMER_PAUSE = 15 * 60 * 10;
         public CountDownTimer countDownTimer { get; set; }
         public int[] config;
         private PomodoroClock p;
@@ -65,12 +72,19 @@ namespace EnvDotNetPomodoro.Model
         public void pause() { countDownTimer.pauseTimer(); }
         public void next() {
             currentIndexTimer++;
-            if (currentIndexTimer > 7) 
+            if (currentIndexTimer > 7) { 
                 countDownTimer.stopTimer();
-            else 
+                List<string> newTag = new List<string>();
+                foreach (string s in tag)
+                    newTag.Add(s);
+                newTag.Add("finish");
+                this.tag = newTag.ToArray();
+            } else 
                 countDownTimer.nextTimer(config[currentIndexTimer]);
         }
-
+        public override string ToString() {
+            return sujet + client + tagAsString + priorite + date + currentIndexTimer.ToString();
+        }
         public void GetObjectData(SerializationInfo info, StreamingContext context) {
             throw new NotImplementedException();
         }

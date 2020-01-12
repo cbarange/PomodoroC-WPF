@@ -48,6 +48,16 @@ namespace EnvDotNetPomodoro.Model {
                 pomodoroList.Add(p);
         }
         public void resetFilter() {
+            foreach (PomodoroClock p in pomodoroList) {
+                Boolean isInList = false;
+                foreach (PomodoroClock p2 in fullPomodoroList)
+                    if (p.ToString() == p2.ToString())
+                        isInList = true;
+                if (!isInList)
+                    fullPomodoroList.Add(p);
+
+            }
+
             pomodoroList.Clear();
             foreach (PomodoroClock p in fullPomodoroList)
                 pomodoroList.Add(p);

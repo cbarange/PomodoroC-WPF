@@ -94,14 +94,14 @@ namespace EnvDotNetPomodoro.Model
         private int? _timer;
         private Boolean start = false;
         private CountDownTimer countDownTimer;
-
+        public static Boolean done = true;
         [field: NonSerialized]
         public event EventHandler OnChange;
         public int? timer {
             get { return _timer; }
             set { 
                 _timer = value;
-                if (OnChange!=null) {
+                if (OnChange!=null && timer >= 0) {
                     OnChange(this, new EventArgs());
                 }            
             }
@@ -123,15 +123,15 @@ namespace EnvDotNetPomodoro.Model
             start = true;
         }
         public void tikeTimer() {
-            while (timer>0) {
-                if (start)
+            while (done) {
+                if (start && timer > 0)
                     timer-=1000;
                 Thread.Sleep(1000);
             }
         }
         public void stopTimer() {
             start = false;
-            timer = 0;
+            timer = -1;
         }
         public void pauseTimer() {
             start = false;
@@ -151,9 +151,7 @@ namespace EnvDotNetPomodoro.Model
             return sminute+':'+sseconde;
         }
         public Boolean finish() {
-            if (timer < 0)
-                return true;
-            return false;
+            return timer <= 0;
         }
         
     }

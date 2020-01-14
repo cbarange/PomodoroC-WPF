@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EnvDotNetPomodoro.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,10 @@ namespace EnvDotNetPomodoro
         public MainWindow() {
             InitializeComponent();
             DataContext = new MainWindowViewModel();
+            Closing += StopTimerTick;
+        }
+        public void StopTimerTick(object sender, EventArgs e) {
+            CountDownTimer.done = false;
         }
     }
 }

@@ -156,11 +156,14 @@ namespace EnvDotNetPomodoro {
         
         private void MonTimer_OnChange(object sender, EventArgs e) {
             if (monTimer.countDownTimer.finish()) {
-                try { 
-                System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"..\..\..\endSound.wav");
-                player.Play();
-                }catch(Exception exception) {
-                    MessageBox.Show("Impossible de trouver le fichier endSound.wav");
+                
+                if(monTimer.currentIndexTimer < 6) { 
+                    try { 
+                        System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"..\..\..\endSound.wav");
+                        player.Play();
+                    }catch(Exception exception) {
+                        MessageBox.Show("Impossible de trouver le fichier endSound.wav");
+                    }
                 }
                 monTimer.next();
             }

@@ -123,7 +123,7 @@ namespace EnvDotNetPomodoro.Model
             start = true;
         }
         public void tikeTimer() {
-            while (true) {
+            while (timer>0) {
                 if (start)
                     timer-=1000;
                 Thread.Sleep(1000);
